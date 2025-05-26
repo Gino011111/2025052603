@@ -43,15 +43,21 @@ function draw() {
     } else if (gesture === "rock") {
       // 石頭：圓圈移動到鼻子（第1點）
       [x, y] = keypoints[1];
+    } else if (gesture === "paper") {
+      // 布：圓圈移動到左臉頰（第234點）
+      [x, y] = keypoints[234];
     } else {
-      // 預設：圓圈移動到第94點
-      [x, y] = keypoints[94];
+      // 預設：圓圈移動到下巴（第152點）
+      [x, y] = keypoints[152];
     }
 
-    noFill();
-    stroke(255, 0, 0);
-    strokeWeight(4);
-    ellipse(x, y, 100, 100);
+    if (x && y) {
+      // 繪製圓圈，增加顏色和大小的對比
+      noFill();
+      stroke(0, 255, 0); // 綠色圓圈
+      strokeWeight(6); // 更粗的圓圈邊框
+      ellipse(x, y, 50, 50); // 圓圈大小調整為 50
+    }
   }
 }
 
