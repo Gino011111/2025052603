@@ -1,9 +1,7 @@
 let video;
 let facemesh;
-let handpose;
 let predictions = [];
-let handPredictions = [];
-let gesture = ""; // 儲存辨識到的手勢
+let gesture = "default"; // 新增變數以儲存手勢
 
 function setup() {
   createCanvas(640, 480).position(
@@ -18,16 +16,10 @@ function setup() {
   facemesh.on('predict', results => {
     predictions = results;
   });
-
-  handpose = ml5.handpose(video, modelReady);
-  handpose.on('predict', results => {
-    handPredictions = results;
-    detectGesture();
-  });
 }
 
 function modelReady() {
-  console.log("模型載入完成");
+  // 模型載入完成，可選擇顯示訊息
 }
 
 function draw() {
@@ -35,7 +27,6 @@ function draw() {
 
   if (predictions.length > 0) {
     const keypoints = predictions[0].scaledMesh;
-
     let x, y;
     if (gesture === "scissors") {
       // 剪刀：圓圈移動到額頭（第10點）
@@ -57,32 +48,6 @@ function draw() {
       stroke(0, 255, 0); // 綠色圓圈
       strokeWeight(6); // 更粗的圓圈邊框
       ellipse(x, y, 50, 50); // 圓圈大小調整為 50
-    }
-  }
-}
-
-function detectGesture() {
-  if (handPredictions.length > 0) {
-    const annotations = handPredictions[0].annotations;
-    const thumb = annotations.thumb;
-    const indexFinger = annotations.indexFinger;
-
-    if (indexFinger.length > 0 && thumb.length > 0) {
-      const thumbTip = thumb[3];
-      const indexTip = indexFinger[3];
-
-      const distance = dist(
-        thumbTip[0],
-        thumbTip[1],
-        indexTip[0],
-        indexTip[1]
-      );
-
-      if (distance < 50) {
-        gesture = "rock"; // 石頭
-      } else {
-        gesture = "scissors"; // 剪刀
-      }
     }
   }
 }
